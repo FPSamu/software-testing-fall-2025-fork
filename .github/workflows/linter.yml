@@ -1,0 +1,68 @@
+name: Lint
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  lint-python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+
+      - name: Run Flake8
+        run: flake8 .
+  
+  lint-js:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install ESLint and create basic config
+        run: |
+          npm init -y  # Si no tienes package.json
+          npm install eslint --save-dev
+          # Crear configuración básica si no existe
+          if [ ! -f eslint.config.js ]; then
+            echo "import js from '@eslint/js';
+import { defineConfig } from 'eslint/config';
+
+export default defineConfig([
+  {
+    files: ['**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module'
+    },
+    rules: {
+      ...js.configs.recommended.rules,
+      'no-unused-vars': 'warn',
+      'no-console': 'warn'
+    }
+  }
+]);" > eslint.config.js
+          fi
+
+      - name: Install ESLint recommended config
+        run: npm install @eslint/js --save-dev
+
+      - name: Run ESLint
+        run: npx eslint .

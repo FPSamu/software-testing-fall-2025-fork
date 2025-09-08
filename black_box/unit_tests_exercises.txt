@@ -1,41 +1,59 @@
-1. Function that checks if a given number is positive, negative, or zero.
-
-2. Function that validates user passwords.
-The password validation rules are as follows:
-
-The password must be at least 8 characters long.
-The password must contain at least one uppercase letter,
-one lowercase letter, one digit,
-and one special character (!, @, #, $, %, or &).
-
-3. Function that calculates the discount for a customer's purchase based on the total amount.
+# 3. Function that calculates the discount for a customer's purchase based on the total amount.
 The discount rules are as follows:
 
-If the total amount is less than 100, no discount is applied.
-If the total amount is between 100 and 500 (inclusive), a 10% discount is applied.
-If the total amount is greater than 500, a 20% discount is applied.
+- If the total amount is less than 100, no discount is applied.
+- If the total amount is between 100 and 500 (inclusive), a 10% discount is applied.
+- If the total amount is greater than 500, a 20% discount is applied.
 
-4. Function that processes user orders in an e-commerce system.
-The function calculates the total price of the items in the order,
-applying different discounts based on the quantity of each item.
-The discount rules are as follows:
+## Pruebas
+- total_amount = -5 -> error(negative numbers are not alowed)
+- total_amount = 0 -> no discount
+- total_amount = 50 -> no discount
+- total_amount = 99 -> no discount
+- total_amount = 99.999 -> no discount
+- total_amount = 100 -> discount = 10%
+- total_amount = 100.0000001 -> discount = 10%
+- total_amount = 499 -> discount = 10%
+- total_amount = 500 -> discount = 10%
+- total_amount = 500.0000001 -> discount = 20%
+- total_amount = 501 -> discount = 20%
+- total_amount = 'string' -> error (total_amount must be an integer or float)
+- total_amount = null -> error (total_amount must be an integer or float)
+- total_amount = True -> error (total_amount must be an integer or float)
+- total_amount = False -> error (total_amount must be an integer or float)
+- total_amount = 100000000000000000000 -> discount = 20%
+- total_amount = float('inf') -> error(total_amount must be a finite number)
 
-If the quantity of a single item is between 1 and 5 (inclusive), no discount is applied.
-If the quantity of a single item is between 6 and 10 (inclusive), a 5% discount is applied.
-If the quantity of a single item is greater than 10, a 10% discount is applied.
+# 4. Function that processes user orders in an e-commerce system. The function calculates the total price of the item s in the order, applying different discounts based on the quantity of each item. The discount rules are as follows:
+- If the quantity of a single item is between 1 and 5 (inclusive), no discount is applied.
+- If the quantity of a single item is between 6 and 10 (inclusive), a 5% discount is applied.
+- If the quantity of a single item is greater than 10, a 10% discount is applied.
 
-5. Function that calculates shipping costs for an online shopping system.
-The function calculates shipping costs based on the total weight of the items
-in the order and the shipping method chosen by the customer.
+	1. quantity = '' -> error
+	2. quantity = 3 -> no discount
+	3. quantity = 5 -> no discount
+	4. quantity = 11 -> 10%
+	5. quantity = 0 -> no discount
+	6. quantity = 7 -> 5%
+	7. quantity = 10 -> 5%
+
+# 5. Function that calculates shipping costs for an online shopping system. The function calculates shipping costs based on the total weight of the items in the order and the shipping method chosen by the customer.
 The shipping cost rules are as follows:
 
 For standard shipping:
+- If the total weight is less than or equal to 5kg, the cost is $10.
+- If the total weight is between 5 and 10 kg (inclusive), the cost is $15. -> Teacher's error: 5 is not included (5.01 < 10)
+- If the total weight is greater than 10 kg, the cost is $20.
 
-If the total weight is less than or equal to 5 kg, the cost is $10.
-If the total weight is between 5 and 10 kg (inclusive), the cost is $15.
-If the total weight is greater than 10 kg, the cost is $20.
 For express shipping:
+- If the total weight is less than or equal to 5kg, the cost is $20.
+- If the total weight is between 5 and 10 kg (inclusive), the cost is $30. -> Teacher's error: 5 is not included (5.01 < 10)
+- If the total weight is greater than 10 kg, the cost is $40.
 
-If the total weight is less than or equal to 5 kg, the cost is $20.
-If the total weight is between 5 and 10 kg (inclusive), the cost is $30.
-If the total weight is greater than 10 kg, the cost is $40.
+	1. weight = 1.2 standard -> discount = 10
+	2. weight = 5 express -> discount = 20
+	3. weight = 5 standard -> discount = 10
+	4. weight = 5.1 express-> discount = 30
+	5. weight = 20 express -> discount = 40
+	6. weight = 20 standard -> discount = 20
+	7. weight = 5.1 standard -> discount = 15
