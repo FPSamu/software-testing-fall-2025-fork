@@ -3,7 +3,7 @@ name: Lint
 on:
   pull_request:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   lint-python:
@@ -15,7 +15,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
@@ -24,7 +24,7 @@ jobs:
 
       - name: Run Flake8
         run: flake8 .
-  
+
   lint-js:
     runs-on: ubuntu-latest
     steps:
@@ -34,31 +34,32 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install ESLint and create basic config
         run: |
-          npm init -y  # Si no tienes package.json
+          npm init -y
           npm install eslint --save-dev
-          # Crear configuración básica si no existe
           if [ ! -f eslint.config.js ]; then
-            echo "import js from '@eslint/js';
-import { defineConfig } from 'eslint/config';
+            cat <<EOF > eslint.config.js
+            import js from '@eslint/js';
+            import { defineConfig } from 'eslint/config';
 
-export default defineConfig([
-  {
-    files: ['**/*.js'],
-    languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: 'module'
-    },
-    rules: {
-      ...js.configs.recommended.rules,
-      'no-unused-vars': 'warn',
-      'no-console': 'warn'
-    }
-  }
-]);" > eslint.config.js
+            export default defineConfig([
+              {
+                files: ['**/*.js'],
+                languageOptions: {
+                  ecmaVersion: 2022,
+                  sourceType: 'module'
+                },
+                rules: {
+                  ...js.configs.recommended.rules,
+                  'no-unused-vars': 'warn',
+                  'no-console': 'warn'
+                }
+              }
+            ]);
+            EOF
           fi
 
       - name: Install ESLint recommended config
