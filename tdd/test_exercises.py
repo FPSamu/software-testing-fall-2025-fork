@@ -139,3 +139,16 @@ class TestStringCalculator(unittest.TestCase):
         self.assertEqual(
             string_calculator("2,\n3"), "Invalid input. Only numbers accepted"
         )
+
+    def test_separator_at_the_end_is_invalid(self):
+        """
+        Tests that an input ending with a separator (comma or newline)
+        returns an error.
+        """
+        expected_error = "Invalid input. Only numbers accepted"
+
+        self.assertEqual(string_calculator("1,2,"), expected_error)
+
+        self.assertEqual(string_calculator("1\n2\n"), expected_error)
+
+        self.assertEqual(string_calculator("5,"), expected_error)
