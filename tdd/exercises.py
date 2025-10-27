@@ -44,42 +44,19 @@ def fizzbuzz(num):
 
 def string_calculator(nums):
     """
-    Create a simple calculator that takes a String and returns a integer
+    2. Allow the add method to handle an unknown number of arguments
     """
-    result = ""
-    error = None
-
     if not nums:
-        parts = []
-    else:
-        cleaned_nums = nums.replace(" ", "")
-        parts = cleaned_nums.split(",")
+        return 0
 
-    if len(parts) == 0:
-        result = "0"
-    else:
-        if len(parts) > 2:
-            error = "To many numbers in the string. Max 2 numbers"
-        else:
-            parsed_numbers = []
-            for part in parts:
-                if not part:
-                    error = "Invalid input. Only numbers accepted"
-                    break
+    cleaned_nums = nums.replace(" ", "")
+    parts = cleaned_nums.split(",")
 
-                if not re.fullmatch(r"\d+", part):
-                    error = "Invalid input. Only numbers accepted"
-                    break
+    parsed_numbers = []
 
-                parsed_numbers.append(int(part))
+    for part in parts:
+        if not part or not re.fullmatch(r"\d+", part):
+            return "Invalid input. Only numbers accepted"
 
-            if error is None:
-                if len(parsed_numbers) == 0:
-                    error = "Invalid input. Only numbers accepted"
-                elif len(parsed_numbers) == 1:
-                    result = str(parsed_numbers[0])
-                else:
-                    result = str(sum(parsed_numbers))
-
-    final = error if error is not None else result
-    return final
+        parsed_numbers.append(int(part))
+    return sum(parsed_numbers)

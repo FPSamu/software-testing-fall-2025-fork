@@ -75,13 +75,18 @@ class TestStringCalculator(unittest.TestCase):
     Test cases for Kata 2
     """
 
-    def test_more_than_2_numbers(self):
+    def test_unknown_number_of_arguments(self):
         """
-        Tests more than 2 numbers
+        Tests summing more than two numbers.
         """
-        self.assertEqual(
-            string_calculator("1,4,5"), "To many numbers in the string. Max 2 numbers"
-        )
+        # Test con 3 números
+        self.assertEqual(string_calculator("1,4,5"), 10)
+
+        # Test con 5 números
+        self.assertEqual(string_calculator("1,2,3,4,5"), 15)
+
+        # Test con 4 números (incluyendo cero, para robustez)
+        self.assertEqual(string_calculator("10,0,2,8"), 20)
 
     def test_exactly_2_numbers(self):
         """
@@ -89,6 +94,12 @@ class TestStringCalculator(unittest.TestCase):
         """
         self.assertEqual(string_calculator("1,5"), 6)
         self.assertEqual(string_calculator("7,9"), 16)
+
+    def test_exactly_1_number(self):
+        """
+        Tests input with single number
+        """
+        self.assertEqual(string_calculator("5"), 5)
 
     def test_zero_as_input(self):
         """
@@ -104,12 +115,6 @@ class TestStringCalculator(unittest.TestCase):
         Tests input with spaces
         """
         self.assertEqual(string_calculator(" 1 , 2 "), 3)
-
-    def test_exactly_1_number(self):
-        """
-        Tests input with single number
-        """
-        self.assertEqual(string_calculator("5"), 5)
 
     def test_empty_number(self):
         """
