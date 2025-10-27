@@ -5,7 +5,7 @@ Test Driven Development (TDD) tests.
 """
 import unittest
 
-from tdd.exercises import fizzbuzz, string_calculator
+from tdd.exercises import fizzbuzz, password_input_field, string_calculator
 
 
 class TestFizzBuzz(unittest.TestCase):
@@ -152,3 +152,75 @@ class TestStringCalculator(unittest.TestCase):
         self.assertEqual(string_calculator("1\n2\n"), expected_error)
 
         self.assertEqual(string_calculator("5,"), expected_error)
+
+
+class TestPasswordValidator(unittest.TestCase):
+    """
+    Test cases for test password input field validation kata
+    """
+
+    def test_valid_password_all_requirements_met(self):
+        """
+        Tests a password that meets ALL requirements.
+        """
+        self.assertEqual(password_input_field("MyP4ssw0rd!"), (True, ""))
+
+    def test_invalid_short_password(self):
+        """
+        Tests a password shorter than 8 characters, only failing R1.
+        """
+        self.assertEqual(
+            password_input_field("P12!@"),
+            (False, "Password must be at least 8 characters"),
+        )
+
+    def test_invalid_less_than_two_numbers(self):
+        """
+        Tests a password with 1 number, only failing R2.
+        """
+        self.assertEqual(
+            password_input_field("LongP4ssword!"),
+            (False, "The password must contain at least 2 numbers"),
+        )
+
+    def test_invalid_no_capital_letter(self):
+        """
+        Tests a password with no capital letters, only failing R4.
+        """
+        self.assertEqual(
+            password_input_field("longp4ssw0rd!"),
+            (False, "Password must contain at least one capital letter"),
+        )
+
+    def test_invalid_no_special_character(self):
+        """
+        Tests a password with no special characters, only failing R5.
+        """
+        self.assertEqual(
+            password_input_field("LongP4ssw0rd"),
+            (False, "Password must contain at least one special character"),
+        )
+
+    def test_multiple_errors_length_and_numbers(self):
+        """
+        Tests a password failing length and numbers.
+        """
+
+        expected_length_numbers = (
+            "Password must be at least 8 characters\n"
+            "The password must contain at least 2 numbers\n"
+            "Password must contain at least one special character"
+        )
+        self.assertEqual(password_input_field("Pa1"), (False, expected_length_numbers))
+
+    def test_all_requirements_fail(self):
+        """
+        Tests a password that fails all four requirements.
+        """
+        expected_all_errors = (
+            "Password must be at least 8 characters\n"
+            "The password must contain at least 2 numbers\n"
+            "Password must contain at least one capital letter\n"
+            "Password must contain at least one special character"
+        )
+        self.assertEqual(password_input_field("a"), (False, expected_all_errors))

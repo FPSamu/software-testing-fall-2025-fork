@@ -71,3 +71,28 @@ def string_calculator(nums: str) -> int | str:
         parsed_numbers.append(int(part))
 
     return sum(parsed_numbers)
+
+
+def password_input_field(password: str) -> tuple[bool, str]:
+    """
+    Function for Kata 3
+    """
+
+    errors = []
+    if len(password) < 8:
+        errors.append("Password must be at least 8 characters")
+
+    if len(re.findall(r"\d", password)) < 2:
+        errors.append("The password must contain at least 2 numbers")
+
+    if not re.search(r"[A-Z]", password):
+        errors.append("Password must contain at least one capital letter")
+
+    if not re.search(r"[^a-zA-Z0-9\s]", password):
+        errors.append("Password must contain at least one special character")
+
+    if not errors:
+        return (True, "")
+
+    error_message = "\n".join(errors)
+    return (False, error_message)
