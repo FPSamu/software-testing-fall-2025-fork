@@ -30,12 +30,14 @@ class TestDataFetcher(unittest.TestCase):
         #         {"id": 2, "title": "Title 2", "body": "Body 2"},
         #     ]
 
-        # mock_get = patch('requests.get')
+        # patch_get = patch('requests.get')
+        # mock_get = patch_get.start()
         # mock_get.return_value.status_code = 200
         # mock_get.return_value.json.return_value = [
         #     {"id": 1, "title": "Title 1", "body": "Body 1"},
         #     {"id": 2, "title": "Title 2", "body": "Body 2"},
         # ]
+        # patch_get.stop()
 
         # Call the function under test
         result = fetch_data_from_api("https://api.example.com/data")
@@ -54,9 +56,11 @@ class TestDataFetcher(unittest.TestCase):
 #
 #     def test_print(self):
 #         # Mock the requests.get method
-#         mock_print = patch('__main__.print')
+#         patch_print = patch('__main__.print')
+#         mock_print = patch_print.start()
 #
 #         print_hello_world()
 #
 #         # Verify data is what we expect
 #         mock_print.assert_called_once_with("Hello, World!")
+#         patch_print.stop()
