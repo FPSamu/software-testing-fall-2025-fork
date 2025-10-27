@@ -42,21 +42,32 @@ def fizzbuzz(num):
     return output
 
 
-def string_calculator(nums):
+def string_calculator(nums: str) -> int | str:
     """
-    2. Allow the add method to handle an unknown number of arguments
+    3. Allow the add method to handle newlines as separators, instead of comas
+    “1,2\n3” should return “6”
+    “2,\n3” is invalid, but no need to clarify it with the program
     """
+
     if not nums:
         return 0
 
     cleaned_nums = nums.replace(" ", "")
-    parts = cleaned_nums.split(",")
+
+    temp_nums = cleaned_nums.replace("\n", ",")
+
+    parts = temp_nums.split(",")
 
     parsed_numbers = []
 
     for part in parts:
-        if not part or not re.fullmatch(r"\d+", part):
+
+        if not part:
+            return "Invalid input. Only numbers accepted"
+
+        if not re.fullmatch(r"\d+", part):
             return "Invalid input. Only numbers accepted"
 
         parsed_numbers.append(int(part))
+
     return sum(parsed_numbers)

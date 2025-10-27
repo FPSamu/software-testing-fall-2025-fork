@@ -121,3 +121,21 @@ class TestStringCalculator(unittest.TestCase):
         Tests no input
         """
         self.assertEqual(string_calculator(""), 0)
+
+    def test_handle_newlines_as_separators(self):
+        """
+        Tests that the calculator handles newlines as valid separators.
+        """
+        self.assertEqual(string_calculator("1\n2"), 3)
+
+        self.assertEqual(string_calculator("1,2\n3"), 6)
+        self.assertEqual(string_calculator("1\n2\n3"), 6)
+
+    def test_invalid_input_newline_adjacent_to_comma(self):
+        """
+        Tests the specific invalid input where a newline is adjacent to a comma,
+        as defined by the requirement: '2,\n3' is invalid.
+        """
+        self.assertEqual(
+            string_calculator("2,\n3"), "Invalid input. Only numbers accepted"
+        )
