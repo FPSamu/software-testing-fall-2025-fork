@@ -4,6 +4,8 @@
 Test Driven Development (TDD) exercises.
 """
 
+import re
+
 
 def fizzbuzz(num):
     """
@@ -38,3 +40,46 @@ def fizzbuzz(num):
         output = str(num)
 
     return output
+
+
+def string_calculator(nums):
+    """
+    Create a simple calculator that takes a String and returns a integer
+    """
+    result = ""
+    error = None
+
+    if not nums:
+        parts = []
+    else:
+        cleaned_nums = nums.replace(" ", "")
+        parts = cleaned_nums.split(",")
+
+    if len(parts) == 0:
+        result = "0"
+    else:
+        if len(parts) > 2:
+            error = "To many numbers in the string. Max 2 numbers"
+        else:
+            parsed_numbers = []
+            for part in parts:
+                if not part:
+                    error = "Invalid input. Only numbers accepted"
+                    break
+
+                if not re.fullmatch(r"\d+", part):
+                    error = "Invalid input. Only numbers accepted"
+                    break
+
+                parsed_numbers.append(int(part))
+
+            if error is None:
+                if len(parsed_numbers) == 0:
+                    error = "Invalid input. Only numbers accepted"
+                elif len(parsed_numbers) == 1:
+                    result = str(parsed_numbers[0])
+                else:
+                    result = str(sum(parsed_numbers))
+
+    final = error if error is not None else result
+    return final

@@ -5,7 +5,7 @@ Test Driven Development (TDD) tests.
 """
 import unittest
 
-from tdd.exercises import fizzbuzz
+from tdd.exercises import fizzbuzz, string_calculator
 
 
 class TestFizzBuzz(unittest.TestCase):
@@ -68,3 +68,51 @@ class TestFizzBuzz(unittest.TestCase):
         self.assertEqual(fizzbuzz(30), "FizzBuzz")
         self.assertEqual(fizzbuzz(45), "FizzBuzz")
         self.assertEqual(fizzbuzz(-45), "FizzBuzz")
+
+
+class TestStringCalculator(unittest.TestCase):
+    """
+    Test cases for Kata 2
+    """
+
+    def test_more_than_2_numbers(self):
+        """
+        Tests more than 2 numbers
+        """
+        self.assertEqual(
+            string_calculator("1,4,5"), "To many numbers in the string. Max 2 numbers"
+        )
+
+    def test_exactly_2_numbers(self):
+        """
+        Tests exactly 2 numbers
+        """
+        self.assertEqual(string_calculator("1,5"), 6)
+        self.assertEqual(string_calculator("7,9"), 16)
+
+    def test_zero_as_input(self):
+        """
+        Test input with zeros
+        """
+        self.assertEqual(string_calculator("0"), 0)
+        self.assertEqual(string_calculator("0,5"), 5)
+        self.assertEqual(string_calculator("5,0"), 5)
+        self.assertEqual(string_calculator("0,0"), 0)
+
+    def test_spaces_around_comma(self):
+        """
+        Tests input with spaces
+        """
+        self.assertEqual(string_calculator(" 1 , 2 "), 3)
+
+    def test_exactly_1_number(self):
+        """
+        Tests input with single number
+        """
+        self.assertEqual(string_calculator("5"), 5)
+
+    def test_empty_number(self):
+        """
+        Tests no input
+        """
+        self.assertEqual(string_calculator(""), 0)
