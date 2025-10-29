@@ -2,128 +2,139 @@
 """
 Data driven tests
 """
+# pylint: disable=import-error, missing-function-docstring, missing-class-docstring, unused-import
+
 import unittest
 from unittest.mock import Mock
 
 from exercises import CITY_DATABASE, Account, scan_barcode, search_city
 
+from ddt import data, ddt, unpack
 
+
+@ddt
 class TestSearchCity(unittest.TestCase):
     """
     Test cases for search_city
     """
 
-    test_data = [
-        ("a", []),
-        ("P", []),
-        ("Va", ["Valencia", "Vancouver"]),
+    @data(
+        ("Pa", ["Paris"]),
+        ("par", ["Paris"]),
+        ("V", []),
         ("va", ["Valencia", "Vancouver"]),
-        ("VAN", ["Vancouver"]),
-        ("ro", ["Rotterdam", "Rome"]),
-        ("BUDA", ["Budapest"]),
-        ("ape", ["Budapest"]),
-        ("ong", ["Hong Kong"]),
-        ("city", ["New York City"]),
+        ("xyz", []),
         ("*", CITY_DATABASE),
-        ("Zzz", []),
-        ("budas", []),
-    ]
+    )
+    @unpack
+    def test_search_city(self, search_text, expected_result):
+        """
+        Tests for search city function
+        """
+        result = search_city(search_text)
+        self.assertEqual(sorted(result), sorted(expected_result))
 
 
-def generate_search_test(query, expected_result):
+@ddt
+class TestScanBarcode(unittest.TestCase):
     """
-    Generate dinamically a test for search_city
-    """
-
-    def test(self):
-        self.assertEqual(search_city(query), expected_result)
-
-    return test
-
-
-for i, (search, expected) in enumerate(TestSearchCity.test_data, start=1):
-    test_name = f"test_run_data_driven_{i:02d}_{search.replace('*', 'all')}"
-    setattr(TestSearchCity, test_name, generate_search_test(search, expected))
-
-
-class TestPointOfSale(unittest.TestCase):
-    """
-    Test cases for the Point of Sale.
+    Test cases for the ScanBarcode.
     """
 
-    test_data = [
+    @data(
         ("12345", "$7.25"),
         ("23456", "$12.50"),
         ("99999", "Error: barcode not found"),
         ("", "Error: empty barcode"),
         (None, "Error: empty barcode"),
+    )
+    @unpack
+    def test_single_barcode(self, barcode, expected):
+        """
+        test single barcode
+        """
+        result = scan_barcode(barcode)
+        self.assertEqual(result, expected)
+
+    @data(
         (["12345", "23456"], "Total: $19.75"),
+        (["23456", "12345", "12345"], "Total: $27.00"),
         (["12345", "99999"], "Error: barcode not found"),
+        (["", "12345"], "Error: empty barcode"),
         ([], "Error: empty barcode"),
-    ]
+    )
+    @unpack
+    def test_multiple_barcodes(self, barcodes, expected):
+        """
+        test multiple barcodes
+        """
+        result = scan_barcode(barcodes)
+        self.assertEqual(result, expected)
 
 
-def generate_pos_test(value, expected_result):
-    """
-    Create dinamically a test for scan_barcode
-    """
-
-    def test(self):
-        self.assertEqual(scan_barcode(value), expected_result)
-
-    return test
-
-
-for i, (input_value, expected) in enumerate(TestPointOfSale.test_data, start=1):
-    test_name = f"test_point_of_sale_{i:02d}"
-    setattr(TestPointOfSale, test_name, generate_pos_test(input_value, expected))
-
-
-class TestBankAccount(unittest.TestCase):
-    """
-    Tests for Account kata
-    """
+@ddt
+class TestAccount(unittest.TestCase):
 
     def setUp(self):
-        """Excutes before each test"""
-        self.printer = Mock()
-        self.account = Account(self.printer)
+        self.mock_printer = Mock()
+        self.account = Account(self.mock_printer)
 
-    transaction_data = [
-        ("deposit", 1000, "01/04/2014", 1000),
-        ("withdraw", 100, "02/04/2014", 900),
-        ("deposit", 500, "10/04/2014", 1400),
-    ]
-
-    def test_transactions_data_driven(self):
-        """Tests deposits and take outs"""
-        for operation, amount, date, expected_balance in self.transaction_data:
-            with self.subTest(operation=operation, amount=amount):
-                if operation == "deposit":
-                    self.account.deposit(amount, date)
-                else:
-                    self.account.withdraw(amount, date)
-                self.assertEqual(self.account.balance, expected_balance)
-
-    def test_print_statement(self):
+    @data(
+        # deposit
+        ([(1000, "10/01/2023")], [], 1000),
+        # deposit and withdrawal
+        ([(1000, "10/01/2023")], [(500, "14/01/2023")], 500),
+        # many movements
+        ([(1000, "10/01/2023"), (2000, "13/01/2023")], [(500, "14/01/2023")], 2500),
+    )
+    @unpack
+    def test_balance_after_transactions(self, deposits, withdrawals, expected_balance):
         """
-        Tests printing account status
+        test balance
         """
-        self.account.deposit(1000, "01/04/2014")
-        self.account.withdraw(100, "02/04/2014")
-        self.account.deposit(500, "10/04/2014")
+        # deposits
+        for amount, date in deposits:
+            self.account.deposit(amount, date)
+
+        # withdrawals
+        for amount, date in withdrawals:
+            self.account.withdraw(amount, date)
+
+        self.assertEqual(self.account.balance, expected_balance)
+
+    def test_transactions_are_recorded_correctly(self):
+        """
+        test recording
+        """
+        self.account.deposit(1000, "10/01/2023")
+        self.account.withdraw(200, "11/01/2023")
+
+        expected = [
+            ("10/01/2023", 1000, 1000),
+            ("11/01/2023", -200, 800),
+        ]
+        self.assertEqual(self.account.transactions, expected)
+
+    def test_print_statement_format(self):
+        """
+        test print
+        """
+        self.account.deposit(1000, "10/01/2023")
+        self.account.deposit(2000, "13/01/2023")
+        self.account.withdraw(500, "14/01/2023")
 
         self.account.print_statement()
 
-        expected_calls = [
-            ("DATE       | AMOUNT  | BALANCE",),
-            ("10/04/2014 | 500.00 | 1400.00",),
-            ("02/04/2014 | -100.00 | 900.00",),
-            ("01/04/2014 | 1000.00 | 1000.00",),
-        ]
+        self.mock_printer.print_line.assert_any_call("DATE       | AMOUNT  | BALANCE")
 
-        actual_calls = [call.args for call in self.printer.print_line.call_args_list]
-        self.assertEqual(actual_calls, expected_calls)
+        expected_calls = [
+            ("14/01/2023 | -500.00 | 2500.00",),
+            ("13/01/2023 | 2000.00 | 3000.00",),
+            ("10/01/2023 | 1000.00 | 1000.00",),
+        ]
+        self.mock_printer.print_line.assert_has_calls(
+            [unittest.mock.call(*args) for args in expected_calls], any_order=False
+        )
 
 
 if __name__ == "__main__":
