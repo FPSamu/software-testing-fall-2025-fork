@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Functions and data"""
 
+from datetime import datetime
+
 CITY_DATABASE = [
     "Paris",
     "Budapest",
@@ -77,3 +79,41 @@ def _scan_single(barcode):
 
     price = PRODUCT_DATABASE[barcode]
     return f"${price:.2f}"
+
+
+class Account:
+    """
+    Class for Kata 6
+    """
+
+    def __init__(self, printer):
+        """
+        Initialize the account with a balance and empty history
+        """
+        self.transactions = []
+        self.balance = 0
+        self.printer = printer
+
+    def deposit(self, amount, date=None):
+        """
+        Make a deposit
+        """
+        date = date or datetime.now().strftime("%d/%m/%Y")
+        self.balance += amount
+        self.transactions.append((date, amount, self.balance))
+
+    def withdraw(self, amount, date=None):
+        """
+        Take out money
+        """
+        date = date or datetime.now().strftime("%d/%m/%Y")
+        self.balance -= amount
+        self.transactions.append((date, -amount, self.balance))
+
+    def print_statement(self):
+        """
+        Print the account final state
+        """
+        self.printer.print_line("DATE       | AMOUNT  | BALANCE")
+        for date, amount, balance in reversed(self.transactions):
+            self.printer.print_line(f"{date} | {amount:.2f} | {balance:.2f}")
