@@ -44,7 +44,7 @@ repos:
     rev: v3.0.3
     hooks:
       - id: pylint
-        exclude: ^white_box/mockup_exercises.py$
+        additional_dependencies: [behave, requests, selenium]
 
   - repo: https://github.com/sirosen/check-jsonschema
     rev: 0.28.0
