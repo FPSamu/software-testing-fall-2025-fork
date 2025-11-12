@@ -17,7 +17,7 @@ from selenium import webdriver
 def open_browser(context):
     """Opens Google in Chrome."""
     options = Options()
-    options.add_argument("--headless")
+    options.add_argument("--disable-blink-features=AutomationControlled")
     context.driver = webdriver.Chrome(options=options)
     context.driver.get("https://www.google.com")
 
